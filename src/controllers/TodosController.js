@@ -2,13 +2,8 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
 class TodosController extends Component {
-  onTodoItemClick = todoItem => event => {
-    console.log({ todoItem, event });
-  };
-
-  render() {
-    const { as: AsComponent } = this.props;
-    const todos = [
+  state = {
+    todos: [
       {
         id: 1,
         label: "First item"
@@ -17,11 +12,27 @@ class TodosController extends Component {
         id: 2,
         label: "Second item"
       }
-    ];
+    ]
+  };
+
+  onTodoItemClick = todoItem => event => {
+    const todosState = this.state.todos;
+    this.setState({ todos: todosState.filter(({ id }) => id !== todoItem.id) });
+  };
+
+  onTodoItemCreate = todoItem => {
+    const todosState = this.state.todos;
+    this.setState({ todos: [...todosState, todoItem] });
+  };
+
+  render() {
+    const { as: AsComponent } = this.props;
+    const { todos } = this.state;
 
     const childrenProps = {
       todos,
-      onClick: this.onTodoItemClick
+      onClick: this.onTodoItemClick,
+      onCreate: this.onTodoItemCreate
     };
 
     return <AsComponent>{this.props.children(childrenProps)}</AsComponent>;
